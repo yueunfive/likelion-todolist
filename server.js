@@ -45,12 +45,6 @@ MongoClient.connect(
   }
 );
 
-app.use(express.static(path.join(__dirname, "client/build")));
-
-app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "client/build"));
-});
-
 // 회원가입
 app.post("/api/users/sign-up", function (req, res) {
   console.log(req.body);
@@ -212,6 +206,8 @@ app.get("/api/plans/:user_id", function (req, res) {
 });
 
 // 일정 수정
+// updateOne 하고 수정한 데이터 객체 하나만 콘솔창에 띄우려면 다시 안에 findOne 써야한다.
+// url에서 숫자 가져와서 db랑 비교할 때  parseInt() 씌워주기
 app.patch("/api/plans/:user_id/:plan_id", function (req, res) {
   db.collection("login").findOne(
     { _id: ObjectId(req.params.user_id) },
@@ -319,11 +315,4 @@ app.patch("/api/plans/:user_id/:plan_id/reviews", function (req, res) {
       }
     }
   );
-});
-
-// 고객이 URL란에 아무거나 입력하면 걍 리액트 프로젝트나 보내주셈 -> 리액트 라우팅
-// 원래 브라우저 URL창에 때려박는건 서버에게 요청하는거지 리액트 라우터에게 라우팅 요청하는게 아니기 때문에 이 코드 필요
-// 이 코드는 항상 가장 하단에 놓아야 잘됩니다.
-app.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "client/build", "index.html"));
 });
